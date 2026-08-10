@@ -42,28 +42,30 @@ class Player:
         dx = 0
         dy = 0
 
-        # Forward / backward
         if keys[pygame.K_w]:
+
             dx += math.cos(self.angle)
             dy += math.sin(self.angle)
 
         if keys[pygame.K_s]:
+
             dx -= math.cos(self.angle)
             dy -= math.sin(self.angle)
 
-        # Strafe left / right
         if keys[pygame.K_a]:
+
             dx += math.cos(self.angle - math.pi / 2)
             dy += math.sin(self.angle - math.pi / 2)
 
         if keys[pygame.K_d]:
+
             dx += math.cos(self.angle + math.pi / 2)
             dy += math.sin(self.angle + math.pi / 2)
 
-        # Normalize diagonal movement
         length = math.hypot(dx, dy)
 
         if length > 0:
+
             dx /= length
             dy /= length
 
@@ -81,12 +83,12 @@ class Player:
         new_x = self.x + dx
         new_y = self.y + dy
 
-        # X collision
         if self.can_move_to(new_x, self.y):
+
             self.x = new_x
 
-        # Y collision
         if self.can_move_to(self.x, new_y):
+
             self.y = new_y
 
     def can_move_to(self, x, y):
@@ -108,5 +110,4 @@ class Player:
 
         self.angle += mouse_dx * sensitivity
 
-        # Keep angle between 0 and 2π
         self.angle %= (2 * math.pi)
