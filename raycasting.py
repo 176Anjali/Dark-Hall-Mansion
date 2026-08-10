@@ -4,6 +4,7 @@ import math
 class Raycaster:
 
     def __init__(self, mansion_map):
+
         self.mansion_map = mansion_map
 
     def cast_ray(self, player, ray_angle):
@@ -14,7 +15,6 @@ class Raycaster:
         map_x = int(player.x)
         map_y = int(player.y)
 
-        # Distance required to travel one map square
         if ray_dir_x == 0:
             delta_dist_x = float("inf")
         else:
@@ -25,56 +25,86 @@ class Raycaster:
         else:
             delta_dist_y = abs(1 / ray_dir_y)
 
-        # Determine direction
         if ray_dir_x < 0:
+
             step_x = -1
+
             side_dist_x = (
                 player.x - map_x
             ) * delta_dist_x
+
         else:
+
             step_x = 1
+
             side_dist_x = (
                 map_x + 1.0 - player.x
             ) * delta_dist_x
 
         if ray_dir_y < 0:
+
             step_y = -1
+
             side_dist_y = (
                 player.y - map_y
             ) * delta_dist_y
+
         else:
+
             step_y = 1
+
             side_dist_y = (
                 map_y + 1.0 - player.y
             ) * delta_dist_y
 
-        hit = False
         side = 0
+        hit_tile = "#"
 
-        # DDA algorithm
         for _ in range(100):
 
             if side_dist_x < side_dist_y:
 
                 side_dist_x += delta_dist_x
                 map_x += step_x
+
                 side = 0
 
             else:
 
                 side_dist_y += delta_dist_y
                 map_y += step_y
+
                 side = 1
 
-            if self.mansion_map.is_wall(map_x, map_y):
+            if (
+                map_x < 0
+                or map_x >= self.mansion_map.width
+                or map_y < 0
+                or map_y >= self.mansion_map.height
+            ):
 
-                hit = True
+                return 20.0, side, "#"
+
+            tile = self.mansion_map.grid[map_y][map_x]
+
+            if tile in ("#", "D", "E"):
+
+                # Open door behaves like empty space
+                if (
+                    tile in ("D", "E")
+                    and (map_x, map_y)
+                    in self.mansion_map.open_doors
+                ):
+                    continue
+
+                hit_tile = tile
+
                 break
 
-        if not hit:
-            return 20.0, side, 0.0
+        else:
 
-        # Calculate distance
+            return 20.0, side, "#"
+
         if side == 0:
 
             distance = (
@@ -93,25 +123,4 @@ class Raycaster:
 
         distance = max(distance, 0.001)
 
-        # ------------------------------------------
-        # FIND EXACT POSITION ON THE WALL
-        # ------------------------------------------
-
-        if side == 0:
-
-            wall_hit = (
-                player.y
-                + distance * ray_dir_y
-            )
-
-        else:
-
-            wall_hit = (
-                player.x
-                + distance * ray_dir_x
-            )
-
-        # Keep only fractional part
-        wall_hit -= math.floor(wall_hit)
-
-        return distance, side, wall_hit
+        return distance, side, hit_tile
