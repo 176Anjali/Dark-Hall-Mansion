@@ -24,6 +24,11 @@ class Player:
 
         self.radius = PLAYER_RADIUS
 
+        #Player's health
+        self.health = 100
+        # Items collected by the player
+        self.inventory = []
+
     # ==========================================
     # MOVEMENT
     # ==========================================
@@ -110,4 +115,27 @@ class Player:
 
         self.angle += mouse_dx * sensitivity
 
+        # Keep angle between 0 and 2π
         self.angle %= (2 * math.pi)
+
+        # ==========================================
+        # INVENTORY
+        # ==========================================
+
+        def add_item(self, item):
+
+            if item not in self.inventory:
+
+                self.inventory.append(item)
+
+
+        def has_item(self, item):
+
+            return item in self.inventory
+
+
+        def remove_item(self, item):
+
+            if item in self.inventory:
+
+                self.inventory.remove(item)
