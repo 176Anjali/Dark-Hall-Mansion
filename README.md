@@ -180,7 +180,7 @@ Contains the game's background music and gameplay sound effects.
 ---
 
 ## 📁 Project Structure
-
+```text
 Dark Hall Mansion/
 │
 ├── game.py
@@ -218,6 +218,7 @@ Dark Hall Mansion/
         └── door-opening sound
         └── game over
 
+```
 ---
 
 ## 🧩 Core Game Features
